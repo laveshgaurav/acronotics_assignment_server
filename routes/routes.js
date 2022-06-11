@@ -168,4 +168,6 @@ router.post("/principal/getTeachers", (req, res) => {
   }
 });
 
+// teacher login
+
 module.exports = router;
