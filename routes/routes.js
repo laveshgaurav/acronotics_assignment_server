@@ -61,7 +61,7 @@ router.post("/principal/login", (req, res) => {
           message: err?.sqlMessage,
           status: false,
         });
-      if (results[0].pass !== pass) {
+      if (results[0]?.pass !== pass) {
         return res.status(200).send({
           message: "Invalid Credentials",
           status: false,
@@ -169,5 +169,45 @@ router.post("/principal/getTeachers", (req, res) => {
 });
 
 // teacher login
+// principal login route
+router.post("/teacher/login", (req, res) => {
+  try {
+    const { email, pass } = req.body;
+    if (!email.trim() || !pass.trim()) {
+      return res.status(200).send({
+        message: "Fill all the required fields",
+        status: false,
+      });
+    }
+    var statement = `SELECT * FROM Teacher WHERE email="${email}"`;
+    db.query(statement, (err, results) => {
+      if (err)
+        return res.status(200).send({
+          message: err?.sqlMessage,
+          status: false,
+        });
+      if (results[0]?.pass !== pass) {
+        return res.status(200).send({
+          message: "Invalid Credentials",
+          status: false,
+        });
+      } else {
+        return res.status(200).send({
+          message: "Login Success",
+          status: true,
+          data: {
+            ...results[0],
+            pass: "********",
+          },
+        });
+      }
+    });
+  } catch (e) {
+    return res.status(200).send({
+      message: e.message,
+      status: false,
+    });
+  }
+});
 
 module.exports = router;
